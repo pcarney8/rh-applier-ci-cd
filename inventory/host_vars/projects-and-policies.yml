@@ -1,0 +1,73 @@
+---
+ansible_connection: local
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: ci-cd
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    template_action: create
+    params: "{{ playbook_dir }}/params/projectrequests/{{ ci_cd.namespace }}"
+    tags:
+    - projects
+  - name: dev
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    template_action: create
+    params: "{{ playbook_dir }}/params/projectrequests/{{ dev.namespace }}"
+    tags:
+    - projects
+  - name: test
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    template_action: create
+    params: "{{ playbook_dir }}/params/projectrequests/{{ test.namespace }}"
+    tags:
+    - projects
+- object: policy
+  content:
+  - name: ci-cd-permissions
+    file: "{{ playbook_dir }}/policy/residency-admins.yaml"
+    file_action: apply
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - policy
+  - name: ci-cd-permissions-devs
+    file: "{{ playbook_dir }}/policy/residency-developers.yaml"
+    file_action: apply
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - policy
+  - name: team-dev-role-binding
+    file: "{{ playbook_dir }}/policy/residency-admins.yaml"
+    file_action: apply
+    namespace: "{{ dev.namespace }}"
+    tags:
+    - policy
+  - name: devs-dev-role-binding
+    file: "{{ playbook_dir }}/policy/residency-developers.yaml"
+    file_action: apply
+    namespace: "{{ dev.namespace }}"
+    tags:
+    - policy
+  - name: jenkins-dev-role-binding
+    template: "{{ playbook_dir }}/policy/jenkins-rolebinding.yaml"
+    params: "{{ playbook_dir }}/params/rolebindings/jenkins"
+    namespace: "{{ dev.namespace }}"
+    tags:
+    - policy
+  - name: team-test-role-binding
+    file: "{{ playbook_dir }}/policy/residency-admins.yaml"
+    file_action: apply
+    namespace: "{{ test.namespace }}"
+    tags:
+    - policy
+  - name: devs-test-role-binding
+    file: "{{ playbook_dir }}/policy/residency-developers.yaml"
+    file_action: apply
+    namespace: "{{ test.namespace }}"
+    tags:
+    - policy
+  - name: jenkins-test-role-binding
+    template: "{{ playbook_dir }}/policy/jenkins-rolebinding.yaml"
+    params: "{{ playbook_dir }}/params/rolebindings/jenkins"
+    namespace: "{{ test.namespace }}"
+    tags:
+    - policy

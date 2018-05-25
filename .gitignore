@@ -1,0 +1,43 @@
+openshift-applier
+roles/*
+!roles/configure-nexus
+
+# Ignore everything that isn't project.j2
+params/projectrequests/*
+!params/projectrequests/project.j2
+
+# Ignore everything that isn't secret.j2
+params/secrets/*
+!params/secrets/secret.j2
+
+# Ignore everything that isn't build.j2 or deploy.j2
+params/jenkins/*
+!params/jenkins/build.j2
+!params/jenkins/deploy.j2
+
+# Ignore everything that isn't build.j2 or deploy.j2
+params/rolebindings/*
+!params/rolebindings/jenkins.j2
+!params/rolebindings/devs
+!params/rolebindings/team
+
+gdsl
+
+# Python
+*.pyc
+
+# Ansible
+*.retry
+
+# IntelliJ
+.idea
+*.iml
+target
+
+# Eclipse
+.metadata
+.settings
+.classpath
+.project
+#bin
+tmp

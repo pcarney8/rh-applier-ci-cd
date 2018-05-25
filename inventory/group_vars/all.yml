@@ -1,0 +1,10 @@
+---
+ci_cd:
+  namespace: psc-ci-cd
+  display_name: psc-ci-cd
+dev:
+  namespace: psc-dev
+  display_name: psc-dev
+test:
+  namespace: psc-test
+  display_name: psc-test

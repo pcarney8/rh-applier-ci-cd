@@ -1,0 +1,14 @@
+---
+- name: Setup Jenkins and nexus
+  hosts: tools
+  tasks:
+    - name: replace jenkins build params with variables
+      template:
+        src: "{{ playbook_dir }}/params/jenkins/build.j2"
+        dest: "{{ playbook_dir }}/params/jenkins/build"
+    - name: replace jenkins deploy params with variables
+      template:
+        src: "{{ playbook_dir }}/params/jenkins/deploy.j2"
+        dest: "{{ playbook_dir }}/params/jenkins/deploy"
+    - include_role:
+        name: openshift-applier/roles/openshift-applier

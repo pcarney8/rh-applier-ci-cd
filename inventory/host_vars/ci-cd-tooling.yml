@@ -1,0 +1,49 @@
+---
+ansible_connection: local
+openshift_cluster_content:
+- galaxy_requirements: "{{ playbook_dir }}/requirements.yml"
+- object: ci-cd-builds
+  content:
+  - name: jenkins-s2i
+    template: "{{ playbook_dir }}/openshift-templates/jenkins-s2i-build/template.yaml"
+    params: "{{ playbook_dir }}/params/jenkins/build"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - jenkins
+  - name: jenkins-slave-mvn
+    template: "{{ playbook_dir }}/openshift-templates/jenkins-slave-pod/template-with-secret.yml"
+    params: "{{ playbook_dir }}/params/jenkins-slave-mvn/build"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - jenkins-slaves
+    - mvn-slave
+#TODO: check if we need a secret for npm
+  - name: jenkins-slave-npm
+    template: "{{ playbook_dir }}/openshift-templates/jenkins-slave-pod/template-with-secret.yml"
+    params: "{{ playbook_dir }}/params/jenkins-slave-npm/build"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - jenkins-slaves
+    - npm-slave
+#  - name: tool-box
+#    template: "{{ playbook_dir }}/openshift-templates/docker-build/template.yaml"
+#    params: "{{ playbook_dir }}/params/tool-box/build"
+#    namespace: "{{ ci_cd.namespace }}"
+#    tags:
+#      - tool-box
+- object: ci-cd-deployments
+  content:
+  - name: jenkins-ephemeral
+    template: "{{ playbook_dir }}/openshift-templates/jenkins/jenkins-ephemeral-template.yaml"
+    params: "{{ playbook_dir }}/params/jenkins/deploy"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - jenkins
+  - name: nexus
+    template: https://raw.githubusercontent.com/rht-labs/labs-ci-cd/v3.9.1/openshift-templates/nexus/template.json
+    params: "{{ playbook_dir }}/params/nexus/deploy"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - nexus
+    post_steps:
+    - role: "labs-ci-cd/roles/configure-nexus"

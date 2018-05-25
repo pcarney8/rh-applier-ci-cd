@@ -1,0 +1,23 @@
+---
+ansible_connection: local
+openshift_cluster_content:
+- object: secrets
+  content:
+  - name: jenkins-secret
+    template: "{{ playbook_dir }}/openshift-templates/secrets/template.yml"
+    params: "{{ playbook_dir }}/params/secrets/{{ jenkins.name }}"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - ci-cd
+  - name: spring-secret
+    template: "{{ playbook_dir }}/openshift-templates/secrets/template.yml"
+    params: "{{ playbook_dir }}/params/secrets/{{ spring.name }}"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - spring
+  - name: vue-secret
+    template: "{{ playbook_dir }}/openshift-templates/secrets/template.yml"
+    params: "{{ playbook_dir }}/params/secrets/{{ vue.name }}"
+    namespace: "{{ ci_cd.namespace }}"
+    tags:
+    - vue
